@@ -28,7 +28,7 @@ sub _relay {
 	my $res = new Net::DNS::Resolver;
 	my @mx = mx($res, defined($1) ? $1 : hostdomain);
 
-	next unless defined(@mx);
+	next unless @mx;
 
 	# Loop through the MXs.
 	foreach $rr (@mx) {
