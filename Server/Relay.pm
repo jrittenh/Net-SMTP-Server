@@ -20,25 +20,25 @@ $VERSION = '1.1';
 sub _relay {
     my $self = shift;
     my $target;
-    
+
     # Loop through the recipient list.
     foreach $target (@{$self->{TO}}) {
 	my $rr;
 	my $domain = /@(.*)/;
 	my $res = new Net::DNS::Resolver;
 	my @mx = mx($res, defined($1) ? $1 : hostdomain);
-	
+
 	next unless defined(@mx);
-	
+
 	# Loop through the MXs.
 	foreach $rr (@mx) {
 	    my $client = new Net::SMTP($rr->exchange) || next;
-	    
+
 	    $client->mail($self->{FROM});
 	    $client->to($target);
 	    $client->data($self->{MSG});
 	    $client->quit;
-	    
+
 	    last;
 	}
     }
@@ -49,7 +49,7 @@ sub new {
     my($this, $tmpto) = undef;
 
     $this = $_[0];
-    
+
     my $class = ref($this) || $this;
     my $self = {};
 
@@ -57,9 +57,9 @@ sub new {
     $self->{TO} = $_[2];
     $self->{MSG} = $_[3];
 
-    bless($self, $class);    
+    bless($self, $class);
     croak("Bad format.") unless defined($self->{MSG});
-    
+
     $self->_relay;
 
     return $self;
@@ -96,7 +96,7 @@ Net::SMTP::Server::Relay - A simple relay module for Net::SMTP::Server.
     # Process the client.  This command will block until
     # the connecting client completes the SMTP transaction.
     $client->process || next;
-    
+
     # In this simple server, we're just relaying everything
     # to a server.  If a real server were implemented, you
     # could save email to a file, or perform various other
@@ -110,7 +110,7 @@ Net::SMTP::Server::Relay - A simple relay module for Net::SMTP::Server.
 
 The Net::SMTP::Server::Relay module implements simple SMTP relaying
 for use with the Net::SMTP::Server module.  All this module does is to
-take a given message and iterate through the list of recipients, doing 
+take a given message and iterate through the list of recipients, doing
 DNS lookups for the associated MX record and delivering the messages.
 This module makes extensive use of the plethora of other modules
 already implemented for Perl (specifically the DNS and Net::SMTP
@@ -128,12 +128,12 @@ Where $from is the sender, @to is an array containing the list of
 recipients, and $msg is the message to relay.
 
 =head1 AUTHOR AND COPYRIGHT
-Net::SMTP::Server / SMTP::Server is Copyright(C) 1999, 
+Net::SMTP::Server / SMTP::Server is Copyright(C) 1999,
   MacGyver (aka Habeeb J. Dihu) <macgyver@tos.net>.  ALL RIGHTS RESERVED.
 
 You may distribute this package under the terms of either the GNU
 General Public License or the Artistic License, as specified in the
-Perl README file. 
+Perl README file.
 
 =head1 SEE ALSO
 
